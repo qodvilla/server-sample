@@ -80,31 +80,36 @@ server.post('/register', (req,res) => {
     // get req body, add date joined, and entries to it : )
     const reqBody = req.body;
     const {email, password, name} = reqBody;
-    bcrypt.hash(password, null, null, function(err, hash) {
-        db.transaction(trx => {
-            trx('login').insert({
-                email,
-                hash
-            }).returning('email')
-            .then(loginEmail => {
-                trx('users').insert({
-                    name: name,
-                    email: loginEmail[0].email,
-                    joined: new Date()})
-                    .returning('*')
-                    .then(user => {
-                        res.status(201);
-                        res.json(user[0]);
-                    })
-                    .then(trx.commit)
-                    .catch(err => {
-                        res.json("Something went wrong.")
-                    });
-            }).catch(err => {
-                console.log("Error registering.");
-            })
-        })
-    });
+    res.json({
+        email,
+        password,
+        name
+    })
+    // bcrypt.hash(password, null, null, function(err, hash) {
+    //     db.transaction(trx => {
+    //         trx('login').insert({
+    //             email,
+    //             hash
+    //         }).returning('email')
+    //         .then(loginEmail => {
+    //             trx('users').insert({
+    //                 name: name,
+    //                 email: loginEmail[0].email,
+    //                 joined: new Date()})
+    //                 .returning('*')
+    //                 .then(user => {
+    //                     res.status(201);
+    //                     res.json(user[0]);
+    //                 })
+    //                 .then(trx.commit)
+    //                 .catch(err => {
+    //                     res.json("Something went wrong.")
+    //                 });
+    //         }).catch(err => {
+    //             console.log("Error registering.");
+    //         })
+    //     })
+    // });
 })
 
 // Profile route:
